@@ -47,7 +47,7 @@ def inbound_sms():
         ai_response = gemini_bot(message_text)
         print(f'AI response: {ai_response}')
 
-        # Send "hello world" response using direct HTTP
+        # Send response using direct HTTP
         result = send_sms(from_number, ai_response)
         
         if result and result.get('messages') and result['messages'][0]['status'] == '0':
@@ -64,8 +64,17 @@ def inbound_sms():
 def health_check():
     return jsonify({"status": "healthy"}), 200
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    print(f"🔍 Root route accessed with {request.method}")
+    print(f"🌐 User-Agent: {request.headers.get('User-Agent', 'Unknown')}")
+    print(f"📍 Remote Address: {request.remote_addr}")
+    print(f"🔗 Referrer: {request.headers.get('Referer', 'None')}")
+    
+    if request.method == 'POST':
+        print(f"📦 POST Data: {request.form.to_dict()}")
+        print(f"📄 Headers: {dict(request.headers)}")
+    
     return jsonify({"message": "Vonage SMS Webhook Server"}), 200
 
 if __name__ == '__main__':
