@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
+from simple_bot import gemini_bot
 import requests
 import os
 
@@ -40,10 +41,14 @@ def inbound_sms():
         message_text = data.get('text')
         
         print(f"📨 Received SMS from {from_number}: {message_text}")
-        print(f"Raw webhook data: {data}")
-        
+        # print(f"Raw webhook data: {data}")
+        print('Sending to AI...')
+
+        ai_response = gemini_bot(message_text)
+        print(f'AI response: {ai_response}')
+
         # Send "hello world" response using direct HTTP
-        result = send_sms(from_number, "hello world")
+        result = send_sms(from_number, ai_response)
         
         if result and result.get('messages') and result['messages'][0]['status'] == '0':
             print("✅ Response sent successfully!")
