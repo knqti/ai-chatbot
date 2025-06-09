@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Vonage credentials
 VONAGE_API_KEY = os.getenv("VONAGE_API_KEY")
 VONAGE_API_SECRET = os.getenv("VONAGE_API_SECRET")
-VONAGE_PHONE_NUMBER = "16513141214"
+VONAGE_PHONE_NUMBER = os.getenv("VONAGE_PHONE_NUMBER")
 
 def send_sms(to_number, message):
     """Send SMS using Vonage REST API directly"""
@@ -47,12 +47,12 @@ def inbound_sms():
         result = send_sms(from_number, ai_response)
         
         if result and result.get('messages') and result['messages'][0]['status'] == '0':
-            print("✅ Response sent successfully!")
+            print("Response sent successfully!")
         else:
-            print(f"❌ Error sending SMS: {result}")
+            print(f"Error sending SMS: {result}")
             
     except Exception as e:
-        print(f"❌ Error in webhook: {e}")
+        print(f"Error in webhook: {e}")
     
     return jsonify({"status": "ok"}), 200
 
@@ -62,18 +62,18 @@ def health_check():
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    print(f"🔍 Root route accessed with {request.method}")
-    print(f"🌐 User-Agent: {request.headers.get('User-Agent', 'Unknown')}")
-    print(f"📍 Remote Address: {request.remote_addr}")
-    print(f"🔗 Referrer: {request.headers.get('Referer', 'None')}")
+    print(f"Root route accessed with {request.method}")
+    print(f"User-Agent: {request.headers.get('User-Agent', 'Unknown')}")
+    print(f"Remote Address: {request.remote_addr}")
+    print(f"Referrer: {request.headers.get('Referer', 'None')}")
     
     if request.method == 'POST':
-        print(f"📦 POST Data: {request.form.to_dict()}")
-        print(f"📄 Headers: {dict(request.headers)}")
+        print(f"POST Data: {request.form.to_dict()}")
+        print(f"Headers: {dict(request.headers)}")
     
     return jsonify({"message": "Vonage SMS Webhook Server"}), 200
 
 if __name__ == '__main__':
     print("Starting SMS webhook server...")
-    print(f"Using Vonage number: {VONAGE_PHONE_NUMBER}")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
