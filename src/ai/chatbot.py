@@ -1,5 +1,5 @@
 from datetime import datetime
-from .instructions import sms_guide
+from .instructions import sms_guide, seniors_guide
 from .models import gemini_2_0_flash
 import chromadb
 import os
@@ -74,7 +74,7 @@ class MemoryChatbot:
         
         response = gemini_2_0_flash(
             inbound_msg=str(messages),
-            instructions=sms_guide
+            instructions=sms_guide + seniors_guide
         )
         
         # Store this exchange in memory
