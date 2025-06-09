@@ -2,10 +2,14 @@ from datetime import datetime
 from .instructions import sms_guide
 from .models import gemini_2_0_flash
 import chromadb
+import os
+import tempfile
 import uuid
 
+db_path = os.path.join(tempfile.gettempdir(), 'chroma_db')
+
 class MemoryChatbot:
-    def __init__(self, user_id: str, db_path='./chroma_db'):
+    def __init__(self, user_id: str, db_path=db_path):
         self.user_id = user_id
         
         # Initialize ChromaDB client
